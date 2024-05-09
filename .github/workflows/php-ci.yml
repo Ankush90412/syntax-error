@@ -1,0 +1,36 @@
+name: WordPress CI
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+      - develop  # Optionally add other branches to trigger the workflow
+
+jobs:
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: mbstring, zip, curl  # Add necessary PHP extensions
+
+      - name: Install Composer dependencies
+        run: composer install
+
+      - name: Install WordPress Coding Standards
+        run: npm install --global @wordpress/coding-standards
+
+      - name: Check WordPress Coding Standards
+        run: |
+          phpcs --standard=WordPress-Core --extensions=php .
+
+      - name: Check PHP Syntax
+        run: |
+          find . -name "*.php" -print0 | xargs -0 -n1 php -l
