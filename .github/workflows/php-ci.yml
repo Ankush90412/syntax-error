@@ -24,6 +24,6 @@ jobs:
       - name: Install Composer dependencies
         run: composer install
 
-      - name: Check PHP Syntax
-        run: |
-          find . -name "*.php" -print0 | xargs -0 -n1 php -l
+      - name: Run PHPCS checks
+        id: phpcs
+        run: vendor/bin/phpcs --report-full --report-checkstyle=./phpcs-report.xml
